@@ -1,14 +1,19 @@
 package povtor.lambda;
 
+import org.w3c.dom.stylesheets.LinkStyle;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 
 public class StudentInfo {
-    void testStudents(ArrayList<Student> al, StudentChecks sc) {
+    void testStudents(ArrayList<Student> al, Predicate<Student> predicate) {
         for (Student s : al) {
-            if (sc.check(s)) {
+            if (predicate.test(s)) {
                 System.out.println(s);
             }
         }
@@ -56,8 +61,40 @@ class Test {
 
         StudentInfo info = new StudentInfo();
 
-        Collections.sort(students, (o1, o2) -> o1.course - o2.course);
-        System.out.println(students);
+        Function<Student, Double> function = student -> student.avgGrade;
+        double resAvg = avgOfSmth(students, stud -> stud.avgGrade);
+        System.out.println("Средняя оценка: "+resAvg);
+        double resAge = avgOfSmth(students, stud -> (double)stud.age);
+        System.out.println("Средний возраст: "+resAge);
+        double resCourse = avgOfSmth(students, stud -> (double)stud.course);
+        System.out.println("Средний курс: "+resCourse);
+
+    }
+
+
+    private static double avgOfSmth(List<Student> list, Function<Student, Double> function) {
+        double result = 0;
+        for (Student st : list) {
+            result += function.apply(st);
+        }
+        result = result / list.size();
+        return result;
+    }
+
+//        Collections.sort(students, (o1, o2) -> o1.course - o2.course);
+    //System.out.println(students);
+
+//        Predicate<Student> p1 = student -> student.avgGrade > 7.5;
+//        Predicate<Student> p2 = student -> student.sex == 'm';
+
+//        info.testStudents(students, p1);
+//        info.testStudents(students, p2);
+
+    //methods Predicate
+//        info.testStudents(students, p1.and(p2));
+//        info.testStudents(students, p1.or(p2));
+//        info.testStudents(students, p1.negate());
+
 
 //        Collections.sort(students, new Comparator<Student>() {
 //            @Override
@@ -87,17 +124,17 @@ class Test {
 //        info.printStudentsUnderAge(students, 30);
 //        System.out.println("-------");
 //        info.printStudentsMixCondition(students, 20, 9.5, 'f');
-    }
 }
 
-interface StudentChecks {
-    boolean check(Student s);
-}
 
-class CheckOverGrade implements StudentChecks {
-
-    @Override
-    public boolean check(Student s) {
-        return s.avgGrade > 8;
-    }
-}
+//interface StudentChecks {
+//    boolean check(Student s);
+//}
+//
+//class CheckOverGrade implements StudentChecks {
+//
+//    @Override
+//    public boolean check(Student s) {
+//        return s.avgGrade > 8;
+//    }
+//}
